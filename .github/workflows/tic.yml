@@ -88,6 +88,10 @@ jobs:
       - name: "[Stage] [macOS] Install libgit2"
         if: runner.os == 'macOS'
         run: brew install libgit2
+ 
+      - name: "upgrade windows"
+        if: runner.os == 'Windows'
+        run: choco install openssl curl
 
       - name: "[Stage] [macOS] Install system libs for pkgdown"
         if: runner.os == 'macOS' && matrix.config.pkgdown != ''
