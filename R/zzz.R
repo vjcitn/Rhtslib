@@ -19,6 +19,8 @@ pkgconfig <- function(opt=c("PKG_LIBS", "PKG_CPPFLAGS"))
             R_TOOLS_SOFT <- tools::Rcmd("config R_TOOLS_SOFT", stdout=TRUE)
             syslibs <- paste0(R_TOOLS_SOFT, "/lib/")
             if (dir.exists(syslibs)) {
+                if (file.exists(paste0(syslibs, "libnghttp2.a")))
+                    libs <- append(libs, "nghttp2")
                 if (file.exists(paste0(syslibs, "libpsl.a")))
                     libs <- append(libs, "psl")
                 if (file.exists(paste0(syslibs, "libbrotlidec.a")))
