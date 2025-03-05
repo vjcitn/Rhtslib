@@ -1,0 +1,18 @@
+
+Consider switching to a pkg-config-based approach to handle the linking
+dependencies.
+
+For context, this was suggested by Tomas Kalibera in an email from March 4,
+2025:
+
+  I am sorry to report that Rhtslib needs to be updated to work with an
+  upcoming version of Rtools (Rtools45), where libcurl depends newly on
+  nghttp2 (and nghttp2 has been newly added to Rtools).
+
+  I've created a patch that extends Rhtslib to do it the same way this has
+  been done before in the package, so optionally linking nghttp2 when it is
+  available. With the patch, the package builds fine on my system. However,
+  it might make sense to switch to pkg-config, so that next time the
+  dependencies change (and in case of curl it is quite common), you
+  hopefully don't have to update the package.
+
