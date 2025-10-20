@@ -81,7 +81,9 @@ system.file(package="Rhtslib", "include")
 ## Compile and link against the library
 
 To compile and link your package successfully against the HTSlib included
-in `r Biocpkg("Rhtslib")`, you must include a `src/Makevars` file.
+in `r Biocpkg("Rhtslib")`, you have two options:
+
+### Option 1: Using Rhtslib::pkgconfig() (traditional method)
 
 Create a `src/Makevars` file with the following lines
 
@@ -108,6 +110,27 @@ If your package needs to add to the `$PKG_LIBS` variable, do so by adding
 to the `PKG_LIBS=$(RHTSLIB_LIBS)` line, e.g.,
 
     PKG_LIBS=$(RHTSLIB_LIBS) -L/path/to/foolib -lfoo
+
+### Option 2: Using standard pkg-config (recommended)
+
+`r Biocpkg("Rhtslib")` now provides a standard pkg-config file that can be
+used with the `pkg-config` utility. This is the recommended method for new
+packages as it follows the standard pkg-config protocol.
+
+First, ensure that `pkg-config` can find the Rhtslib pkg-config file by
+setting the `PKG_CONFIG_PATH` environment variable. This can be done in your
+`src/Makevars` file:
+
+    RHTSLIB_PKGCONFIG_DIR=$(shell "${R_HOME}/bin${R_ARCH_BIN}/Rscript" -e \
+        'cat(system.file("lib/pkgconfig", package="Rhtslib"))')
+    
+    PKG_CPPFLAGS=$(shell PKG_CONFIG_PATH="${RHTSLIB_PKGCONFIG_DIR}" \
+        pkg-config --cflags rhtslib)
+    PKG_LIBS=$(shell PKG_CONFIG_PATH="${RHTSLIB_PKGCONFIG_DIR}" \
+        pkg-config --libs rhtslib)
+
+This method is compatible with standard build systems and tools that use
+pkg-config, and works on Linux, macOS, and Windows (when using Rtools).
 
 [comment]: # H.P. - May 3, 2019: We've switched to static linking on
 [comment]: # Linux so this is no longer relevant.

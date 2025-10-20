@@ -1,0 +1,18 @@
+# pkg-config file for Rhtslib
+# Use with: export PKG_CONFIG_PATH=$(Rscript -e 'cat(system.file("lib/pkgconfig", package="Rhtslib"))')
+#
+# Note: This pkg-config file uses the pcfiledir variable to locate the package
+# installation directory. The libdir path will be resolved at runtime based on
+# the actual package installation location.
+
+prefix=${pcfiledir}/../..
+exec_prefix=${prefix}
+libdir=${prefix}/usrlib
+includedir=${prefix}/include
+
+Name: rhtslib
+Description: HTSlib high-throughput sequencing library as an R package
+Version: @VERSION@
+URL: https://bioconductor.org/packages/Rhtslib
+Cflags: -D_FILE_OFFSET_BITS=64 -I${includedir}
+Libs: ${libdir}/libhts.a @PRIVATE_LIBS@
