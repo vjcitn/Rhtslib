@@ -1,0 +1,13 @@
+# R package build artifacts
+*.tar.gz
+*.o
+*.so
+*.dll
+*.dylib
+.Rhistory
+.RData
+.Rproj.user
+
+# Generated files
+inst/lib/pkgconfig/rhtslib.pc
+inst/lib/pkgconfig/rhtslib.pc.in

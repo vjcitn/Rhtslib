@@ -1,0 +1,42 @@
+#!/bin/sh
+# Configure script for Rhtslib package on Windows
+# This script prepares pkg-config support for Rhtslib
+
+# Create directory for pkg-config file
+mkdir -p inst/lib/pkgconfig
+
+# Get package version from DESCRIPTION file
+VERSION=$(grep "^Version:" DESCRIPTION | sed 's/Version: *//')
+
+# Create rhtslib.pc.in template
+cat > inst/lib/pkgconfig/rhtslib.pc.in << 'EOF'
+# pkg-config file for Rhtslib (Windows)
+# Use with: export PKG_CONFIG_PATH=$(Rscript -e 'cat(system.file("lib/pkgconfig", package="Rhtslib"))')
+#
+# Note: This pkg-config file uses the pcfiledir variable to locate the package
+# installation directory. The libdir path will be resolved at runtime based on
+# the actual package installation location.
+
+prefix=${pcfiledir}/../..
+exec_prefix=${prefix}
+libdir=${prefix}/usrlib
+includedir=${prefix}/include
+
+Name: rhtslib
+Description: HTSlib high-throughput sequencing library as an R package
+Version: @VERSION@
+URL: https://bioconductor.org/packages/Rhtslib
+Cflags: -D_FILE_OFFSET_BITS=64 -I${includedir}
+Libs: ${libdir}/libhts.a @PRIVATE_LIBS@
+EOF
+
+# Windows-specific libraries
+PRIVATE_LIBS="-lm -lbz2 -llzma -lcurl -lsecur32 -lbcrypt -lidn2 -lunistring -liconv -lssl -lcrypto -lz -lcrypt32 -lwsock32 -lwldap32 -lssh2 -lgcrypt -lgpg-error -lws2_32 -lzstd -lregex"
+
+# Substitute version and private libs
+sed -e "s/@VERSION@/${VERSION}/g" \
+    -e "s|@PRIVATE_LIBS@|${PRIVATE_LIBS}|g" \
+    inst/lib/pkgconfig/rhtslib.pc.in > inst/lib/pkgconfig/rhtslib.pc
+
+echo "Configuration complete for Windows. pkg-config support prepared."
+exit 0

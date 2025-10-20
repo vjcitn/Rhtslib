@@ -1,0 +1,30 @@
+# Example Makevars file for packages that link to Rhtslib
+# This file demonstrates both methods for using Rhtslib
+
+# Method 1: Using standard pkg-config (recommended)
+# This method is preferred as it follows the standard pkg-config protocol
+# and is compatible with standard build systems.
+
+RHTSLIB_PKGCONFIG_DIR=$(shell "${R_HOME}/bin${R_ARCH_BIN}/Rscript" -e \
+    'cat(system.file("lib/pkgconfig", package="Rhtslib"))')
+
+PKG_CPPFLAGS=$(shell PKG_CONFIG_PATH="${RHTSLIB_PKGCONFIG_DIR}" \
+    pkg-config --cflags rhtslib)
+PKG_LIBS=$(shell PKG_CONFIG_PATH="${RHTSLIB_PKGCONFIG_DIR}" \
+    pkg-config --libs rhtslib)
+
+# Method 2: Using traditional Rhtslib::pkgconfig() function
+# This method is still supported for backwards compatibility.
+# Uncomment the lines below to use this method instead:
+
+# RHTSLIB_LIBS=$(shell "${R_HOME}/bin${R_ARCH_BIN}/Rscript" -e \
+#     'Rhtslib::pkgconfig("PKG_LIBS")')
+# RHTSLIB_CPPFLAGS=$(shell "${R_HOME}/bin${R_ARCH_BIN}/Rscript" -e \
+#     'Rhtslib::pkgconfig("PKG_CPPFLAGS")')
+# 
+# PKG_LIBS=$(RHTSLIB_LIBS)
+# PKG_CPPFLAGS=$(RHTSLIB_CPPFLAGS)
+
+# Note: If you need to add additional libraries or flags, you can do so
+# by appending to PKG_LIBS or PKG_CPPFLAGS, for example:
+# PKG_LIBS+=-L/path/to/foolib -lfoo

@@ -1,3 +1,28 @@
+CHANGES IN VERSION 3.6.0
+------------------------
+
+NEW FEATURES
+
+    o Added standard pkg-config support. The package now installs a 
+      rhtslib.pc file that can be used with the standard pkg-config 
+      utility. This makes Rhtslib compliant with the standard pkg-config 
+      protocol and compatible with build systems that use pkg-config.
+      
+    o Added configure and configure.win scripts that generate the 
+      pkg-config file during package installation.
+      
+    o Updated vignette to document both the traditional Rhtslib::pkgconfig() 
+      method and the new standard pkg-config method.
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o Packages that depend on Rhtslib can now use either:
+        - Traditional method: Rhtslib::pkgconfig("PKG_LIBS")
+        - Standard pkg-config: pkg-config --libs rhtslib
+      The pkg-config file is installed to ${R_PACKAGE_DIR}/lib/pkgconfig/
+      and can be used by setting PKG_CONFIG_PATH appropriately.
+
+
 CHANGES IN VERSION 3.4.0
 ------------------------
 

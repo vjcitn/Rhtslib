@@ -62,3 +62,65 @@ htsVersion <- function()
     packageStartupMessage("Rhtslib htslib version ", vers)
 }
 
+.onLoad <- function(libname, pkgname)
+{
+    ## Update the pkg-config file with the correct architecture-specific paths
+    ## This ensures the pkg-config file works correctly on all platforms
+    update_pkgconfig_file()
+}
+
+#' @keywords internal
+update_pkgconfig_file <- function()
+{
+    ## Get the package installation directory
+    pkg_dir <- system.file(package="Rhtslib")
+    if (pkg_dir == "") return(invisible(NULL))
+    
+    ## Get the pkg-config file path
+    pc_file <- file.path(pkg_dir, "lib", "pkgconfig", "rhtslib.pc")
+    if (!file.exists(pc_file)) return(invisible(NULL))
+    
+    ## Check if we can write to the file
+    if (!file.access(pc_file, mode=2) != 0) {
+        ## File is not writable, skip update silently
+        return(invisible(NULL))
+    }
+    
+    ## Determine the correct usrlib directory
+    platform <- Sys.info()[["sysname"]]
+    if (platform == "Windows") {
+        r_arch <- .Platform[["r_arch"]]
+        usrlib_subdir <- file.path("usrlib", r_arch)
+    } else {
+        usrlib_subdir <- "usrlib"
+    }
+    
+    ## Read the template
+    pc_content <- tryCatch(
+        readLines(pc_file, warn=FALSE),
+        error=function(e) return(NULL)
+    )
+    if (is.null(pc_content)) return(invisible(NULL))
+    
+    ## Update the libdir line to include the architecture-specific path
+    libdir_pattern <- "^libdir=.*"
+    libdir_idx <- grep(libdir_pattern, pc_content)
+    if (length(libdir_idx) > 0) {
+        ## Check if update is needed
+        expected_line <- sprintf("libdir=${prefix}/%s", usrlib_subdir)
+        if (pc_content[libdir_idx] != expected_line) {
+            pc_content[libdir_idx] <- expected_line
+            
+            ## Write the updated content back
+            tryCatch({
+                writeLines(pc_content, pc_file)
+            }, error=function(e) {
+                ## If we can't write (e.g., permissions issue), just continue silently
+                invisible(NULL)
+            })
+        }
+    }
+    
+    invisible(NULL)
+}
+

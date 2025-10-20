@@ -1,0 +1,10 @@
+#!/bin/sh
+# Cleanup script for Rhtslib package
+
+# Remove generated pkg-config files
+rm -f inst/lib/pkgconfig/rhtslib.pc.in
+rm -f inst/lib/pkgconfig/rhtslib.pc
+rm -rf inst/lib/pkgconfig
+
+echo "Cleanup complete."
+exit 0
