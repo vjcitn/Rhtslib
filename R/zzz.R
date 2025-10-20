@@ -26,7 +26,7 @@ pkgconfig <- function(opt=c("PKG_LIBS", "PKG_CPPFLAGS"))
                 if (file.exists(paste0(syslibs, "libbrotlidec.a")))
                     libs <- append(libs, c("brotlidec", "brotlicommon"))
             }
-            libs <- append(libs, c("bcrypt", "idn2", "unistring",
+            libs <- append(libs, c("secur32", "bcrypt", "idn2", "unistring",
                            "iconv", "ssl", "crypto", "z", "crypt32", "wsock32",
                            "wldap32", "ssh2", "gcrypt", "gpg-error", "ws2_32",
                            "zstd", "regex"))
