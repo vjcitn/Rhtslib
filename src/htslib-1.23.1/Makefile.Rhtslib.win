@@ -252,7 +252,6 @@ config.h:
 	echo '#ifndef __APPLE__' >> $@
 	echo '#define HAVE_LZMA_H 1' >> $@
 	echo '#endif' >> $@
-	echo '#define HAVE_DRAND48 1' >> $@
 	echo '#define HAVE_LIBCURL 1' >> $@
 	if [ "x$(HTS_BUILD_POPCNT)" != "x" ] && \
 	   [ "x$(HTS_BUILD_SSE4_1)" != "x" ] && \
